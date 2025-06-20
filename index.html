@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手机频段支持对比</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>手机频段支持对比</h1>
+        <p class="subtitle">可视化展示不同手机型号的频段支持情况，便于您选择最适合的移动设备</p>
+    </header>
+
+    <!-- 顶部菜单栏 -->
+    <div>
+        <div class="button-container">
+            <button id="compareButton" class="compare-btn" disabled>对比选中机型</button>
+            <button id="clearSelectionButton" class="compare-btn" disabled>清除选择</button>
+        </div>
+    </div>
+    <div class="menu-bar">
+        <div>手机型号</div>
+        <div>4G频段支持</div>
+        <div>5G频段支持</div>
+        <div>选择</div>
+    </div>
+
+    <!-- 手机数据容器 -->
+    <div id="phones-container" class="phone-table">
+        <!-- 数据将通过JavaScript动态渲染 -->
+    </div>
+
+    <script>
+        document.getElementById('compareButton').addEventListener('click', function() {
+            const phoneRows = document.querySelectorAll('.phone-row');
+            const selectedPhones = document.querySelectorAll('.phone-select:checked');
+
+            if(selectedPhones.length === 0) return;
+
+            phoneRows.forEach(row => {
+                const select = row.querySelector('.phone-select');
+                if(!select || !select.checked) {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // 统一处理复选框变化
+        function handlePhoneSelection() {
+            const selectedCount = document.querySelectorAll('.phone-select:checked').length;
+            const hasSelected = selectedCount > 0;
+
+            // 更新按钮状态
+            document.getElementById('compareButton').disabled = !hasSelected;
+            document.getElementById('clearSelectionButton').disabled = !hasSelected;
+
+            // 更新对比按钮文本
+            if (hasSelected) {
+                document.getElementById('compareButton').textContent = `对比(${selectedCount})个机型`;
+            } else {
+                document.getElementById('compareButton').textContent = '对比选中机型';
+            }
+        }
+
+        // 为所有复选框添加事件监听
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('phone-select')) {
+                handlePhoneSelection();
+            }
+        });
+
+        // 初始化时检查一次按钮状态
+        handlePhoneSelection();
+
+        document.getElementById('clearSelectionButton').addEventListener('click', function() {
+            // 取消所有复选框的选中状态
+            document.querySelectorAll('.phone-select').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // 显示所有手机行
+            document.querySelectorAll('.phone-row').forEach(row => {
+                row.style.display = '';
+            });
+
+            // 禁用对比按钮和清除选择按钮
+            document.getElementById('compareButton').disabled = true;
+            document.getElementById('clearSelectionButton').disabled = true;
+        });
+    </script>
+
+    <script>
+        // 全局变量
+        let phonesData = [];
+        let selectedPhones = new Set();
+
+        // 确保selectedPhones是Set类型
+        if (!(selectedPhones instanceof Set)) {
+            selectedPhones = new Set();
+        }
+
+        // 初始化函数
+        function initApp() {
+            fetch('support_list.json')
+                .then(response => response.json())
+                .then(supportList => {
+                    // 转换数据格式
+                    phonesData = Object.entries(supportList).map(([model, bands]) => ({
+                        model: model,
+                        bands: {
+                            fiveG: bands.filter(band => band.startsWith('n')),
+                            lte: bands.filter(band => band.startsWith('b'))
+                        }
+                    }));
+
+                    // 初始渲染
+                    renderPhones();
+                })
+                .catch(error => console.error('加载数据失败:', error));
+        }
+
+        // 页面加载完成后初始化应用
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        // 渲染手机数据
+        function renderPhones(phones = phonesData) {
+    // 清空手机容器
+    const phonesContainer = document.getElementById('phones-container');
+    phonesContainer.innerHTML = '';
+
+    if (phones.length === 0) {
+        phonesContainer.innerHTML = '<div class="no-results">没有找到匹配的频段</div>';
+        return;
+    }
+            const container = document.getElementById('phones-container');
+            container.innerHTML = '';
+
+            phonesData.forEach((phone, index) => {
+                const row = document.createElement('div');
+                row.className = 'phone-row';
+
+                // 分离5G和4G频段
+                const fiveGBands = phone.bands.fiveG;
+                const lteBands = phone.bands.lte;
+
+                // 定义所有可能的频段
+            const allLTEBands = ['b1', 'b2', 'b3', 'b4', 'b5', 'b7', 'b8', 'b12','b13','b17','b18','b19', 'b20','b25','b26', 'b28a', 'b28', 'b30', 'b32',"b34", "b38", "b39","b40", "b41", "b42", "b48", 'b66'];
+            const all5GBands = ["n1", "n2", "n3", "n5", "n7", "n8", "n12", "n20", "n25", "n26", "n28a", "n28", "n30", "n38", "n40", "n41", "n48", "n66", "n70", "n75", "n76", "n77", "n78", "n79", "n80", "n81", "n83", "n84", "n89"];
+
+            row.innerHTML = `
+                <div class="phone-name">${phone.model}</div>
+                <div class="lte-bands">
+                    <div class="band-blocks">
+                        ${allLTEBands.map(band => {
+                            const isSupported = lteBands.includes(band);
+                            if (band === 'b28a' && (lteBands.includes('b28') || lteBands.includes('b28a'))) {
+                                return `<div class="band-block lte supported">${band}</div>`;
+                            }
+                            return `<div class="band-block lte ${isSupported ? 'supported' : 'unsupported'}">${band}</div>`;
+                        }).join('')}
+                    </div>
+                </div>
+                <div class="fiveg-bands">
+                    <div class="band-blocks">
+                        ${all5GBands.map(band => {
+                            const isSupported = fiveGBands.includes(band);
+                            if (band === 'n28a' && (fiveGBands.includes('n28') || fiveGBands.includes('n28a'))) {
+                                return `<div class="band-block fiveg supported">${band}</div>`;
+                            }
+                            return `<div class="band-block fiveg ${isSupported ? 'supported' : 'unsupported'}">${band}</div>`;
+                        }).join('')}
+                    </div>
+                </div>
+                <div class="select-container">
+                    <input type="checkbox" class="phone-select" data-index="${index}">
+                    <span class="band-count">
+                        <div class="lte-count">4G：${phone.bands && phone.bands.lte ? phone.bands.lte.length : 0}个</div>
+                        <div class="fiveg-count">5G：${phone.bands && phone.bands.fiveG ? phone.bands.fiveG.length : 0}个</div>
+                        <div class="total-count">总：${phone.bands && phone.bands.lte ? phone.bands.lte.length : 0} + ${phone.bands && phone.bands.fiveG ? phone.bands.fiveG.length : 0} = ${(phone.bands && phone.bands.lte ? phone.bands.lte.length : 0) + (phone.bands && phone.bands.fiveG ? phone.bands.fiveG.length : 0)}个</div>
+                    </span>
+                </div>
+                <div></div>
+            `;
+
+                container.appendChild(row);
+            });
+        }
+
+            updateCompareButton();
+
+        // 切换手机选择状态
+        function togglePhoneSelection(index) {
+            const phone = phonesData[index];
+            const isSelected = selectedPhones.includes(index);
+
+            if (isSelected) {
+                selectedPhones = selectedPhones.filter(i => i !== index);
+            } else {
+                if (selectedPhones.length < 10) {
+                    selectedPhones.push(index);
+                } else {
+                    alert('最多选择10个手机进行对比');
+                    const checkbox = document.querySelector(`.phone-select[data-index="${index}"]`);
+                    if (checkbox) checkbox.checked = false;
+                    return;
+                }
+            }
+
+            updateCompareButton();
+        }
+
+        // 更新对比按钮状态
+        function updateCompareButton() {
+            const button = document.getElementById('compareButton');
+            if (selectedPhones.length > 1) {
+                button.disabled = false;
+                button.textContent = `对比(${selectedPhones.length})个机型`;
+            } else {
+                button.disabled = true;
+                button.textContent = '对比选中机型';
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPhones();
+        });
+    </script>
+</body>
+</html>

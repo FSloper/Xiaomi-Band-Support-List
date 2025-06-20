@@ -1,0 +1,337 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f7fa;
+    color: #333;
+    padding: 20px;
+}
+
+header {
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* 顶部菜单栏样式 */
+.menu-bar {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    display: grid;
+    grid-template-columns: 20% 30% 30% 25%;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #2c3e50;
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+}
+
+.menu-bar > div {
+    padding: 0 15px;
+}
+
+.compare-btn {
+    background: linear-gradient(135deg, #3498db, #2c3e50);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.compare-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #1a252f);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.compare-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 手机数据表格样式 */
+.phone-table {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.phone-row {
+    display: grid;
+    grid-template-columns: 20% 30% 30% 20%;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.lte-bands {
+    margin-right: 10px;
+}
+
+.fiveg-bands {
+    margin-left: 10px;
+}
+
+.phone-row:last-child {
+    border-bottom: none;
+}
+
+.phone-row:hover {
+    background-color: #f8f9fa;
+}
+
+/* 手机型号样式 */
+.phone-model {
+    display: flex;
+    align-items: center;
+}
+        
+.phone-name {
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: #2c3e50;
+}
+
+.phone-year {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+/* 频段支持可视化样式 */
+.bands-visualization {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.band-category {
+    display: flex;
+    align-items: center;
+}
+
+.category-title {
+    width: 120px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.band-blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.band-block {
+    display: inline-block;
+    padding: 2px;
+    margin: 2px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+}
+
+.td-lte {
+    background-color: #3498db;
+}
+
+.fdd-lte {
+    background-color: #2ecc71;
+}
+
+.fiveg {
+    background-color: #9b59b6;
+}
+
+.band-block.lte.supported {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.band-block.fiveg.supported {
+    background-color: #e00af3;
+    color: white;
+}
+
+.band-block.lte.unsupported {
+    background-color: #f5f5f5;
+    color: #999;
+    border: 1px solid #ddd;
+}
+
+.band-block.fiveg.unsupported {
+    background-color: #f5f5f5;
+    color: #999;
+    border: 1px solid #ddd;
+}
+
+.band-count {
+    margin-left: 8px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.band-count div {
+    line-height: 1.5;
+}
+
+.lte-count {
+    color: #4CAF50;
+    margin-right: 5px;
+}
+
+.fiveg-count {
+    color: #2196F3;
+}
+
+.count-badge {
+    background-color: white;
+    color: #333;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+/* 选择框样式 */
+.select-container {
+    display: flex;
+    justify-content: center;
+}
+
+.phone-select {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: #3498db;
+}
+
+/* 图例样式 */
+.legend {
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-top: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+/* 搜索相关样式 */
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+    gap: 20px;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    gap: 8px;
+}
+
+.search-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 250px;
+}
+
+.search-btn {
+    background: linear-gradient(135deg, #3498db, #2c3e50);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #1a252f);
+}
+
+/* 响应式设计 */
+@media (max-width: 900px) {
+    .menu-bar, .phone-row {
+        grid-template-columns: 30% 40% 15% 15%;
+    }
+}
+
+@media (max-width: 700px) {
+    .menu-bar, .phone-row {
+        grid-template-columns: 100%;
+        gap: 15px;
+    }
+    
+    .band-category {
+        flex-wrap: wrap;
+    }
+    
+    .legend {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+}
