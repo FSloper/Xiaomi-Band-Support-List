@@ -21,9 +21,9 @@
     </div>
     <div class="menu-bar">
         <div>手机型号</div>
-        <div>4G频段支持</div>
-        <div>5G频段支持</div>
-        <div>选择</div>
+        <div>4G频段支持 <button class="sort-btn" data-type="lte">↓</button></div>
+        <div>5G频段支持 <button class="sort-btn" data-type="fiveg">↓</button></div>
+        <div>选择 <button class="sort-btn" data-type="total">↓</button></div>
     </div>
 
     <!-- 手机数据容器 -->
@@ -122,6 +122,23 @@
 
         // 页面加载完成后初始化应用
         document.addEventListener('DOMContentLoaded', initApp);
+        
+        // 排序功能
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('sort-btn')) {
+                const sortType = e.target.dataset.type;
+                phonesData.sort((a, b) => {
+                    const aCount = sortType === 'total' ? 
+                        (a.bands?.lte?.length || 0) + (a.bands?.fiveG?.length || 0) :
+                        (a.bands?.[sortType === 'fiveg' ? 'fiveG' : sortType]?.length || 0);
+                    const bCount = sortType === 'total' ? 
+                        (b.bands?.lte?.length || 0) + (b.bands?.fiveG?.length || 0) :
+                        (b.bands?.[sortType === 'fiveg' ? 'fiveG' : sortType]?.length || 0);
+                    return bCount - aCount; // 降序排列
+                });
+                renderPhones();
+            }
+        });
 
         // 渲染手机数据
         function renderPhones(phones = phonesData) {
